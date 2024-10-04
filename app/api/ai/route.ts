@@ -12,13 +12,6 @@ const model = genAI.getGenerativeModel({
     model: "gemini-1.5-pro",
 });
 
-const generationConfig = {
-    temperature: 0.9,
-    topP: 1,
-    topK: 32,
-    maxOutputTokens: 4096,
-};
-
 async function runWithText(prompt: string) {
     try {
         const enhancedPrompt = `

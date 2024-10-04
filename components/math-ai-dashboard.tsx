@@ -6,29 +6,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar } from "@/components/ui/avatar"
 import { Progress } from "@/components/ui/progress"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { Home, Settings, HelpCircle, Upload, Menu, Send, Clock, XCircle, AlertCircle, Camera, Zap, History, User, LogOut } from "lucide-react"
+import { Upload, Clock,  AlertCircle,  Zap} from "lucide-react"
 import { Separator } from "@/components/ui/separator"
-import ReactMarkdown from 'react-markdown'
 import { Loader2 } from "lucide-react"
 import { UserCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import remarkMath from 'remark-math'
 import 'katex/dist/katex.min.css'
 import { InlineMath, BlockMath } from 'react-katex'
 
@@ -64,7 +46,7 @@ export function MathAiDashboard() {
       response,
       timestamp: Date.now(),
     }
-    const updatedHistory = [newItem, ...history].slice(0, 10) // Keep only the last 10 items
+    const updatedHistory = [newItem, ...history].slice(0, 10)
     setHistory(updatedHistory)
     localStorage.setItem('mathAiHistory', JSON.stringify(updatedHistory))
   }
@@ -122,26 +104,6 @@ export function MathAiDashboard() {
       setError(null)
     }
   }
-
-  const SidebarContent = () => (
-    <nav className="space-y-2">
-      {[
-        { icon: Home, label: "Dashboard" },
-        { icon: History, label: "History" },
-        { icon: Settings, label: "Settings" },
-        { icon: HelpCircle, label: "Help" },
-      ].map((item, index) => (
-        <a
-          key={index}
-          href="#"
-          className="flex items-center px-4 py-2 text-gray-700 rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-        >
-          <item.icon className="w-5 h-5 mr-3" />
-          {item.label}
-        </a>
-      ))}
-    </nav>
-  )
 
   const renderMath = (text: string) => {
     const parts = text.split(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/);
