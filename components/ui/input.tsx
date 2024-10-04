@@ -1,12 +1,13 @@
-import * as React from "react"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-import { cn } from "@/lib/utils"
-
+// Interface that extends the default HTML attributes for input elements
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
 
+// Forward ref to allow parent components to reference the input element
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
+  ({ className, type = "text", ...props }, ref) => {
     return (
       <input
         type={type}
@@ -15,11 +16,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className
         )}
         ref={ref}
-        {...props}
+        {...props} // Spread additional props onto the input element
       />
-    )
+    );
   }
-)
-Input.displayName = "Input"
+);
 
-export { Input }
+// Display name for the input component
+Input.displayName = "Input";
+
+export { Input };
