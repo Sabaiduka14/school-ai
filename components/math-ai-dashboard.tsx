@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent } from "@/components/ui/card"
-import { Avatar } from "@/components/ui/avatar"
-import { Progress } from "@/components/ui/progress"
-import { Upload, Clock,  AlertCircle,  Zap} from "lucide-react"
-import { Separator } from "@/components/ui/separator"
-import { Loader2 } from "lucide-react"
-import { UserCircle } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import 'katex/dist/katex.min.css'
-import { InlineMath, BlockMath } from 'react-katex'
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
+import { Upload, Clock, AlertCircle, Zap } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Loader2 } from "lucide-react";
+import { UserCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import 'katex/dist/katex.min.css';
+import { InlineMath, BlockMath } from 'react-katex';
 
 interface HistoryItem {
   id: string;
@@ -22,22 +22,22 @@ interface HistoryItem {
 }
 
 export function MathAiDashboard() {
-  const [prompt, setPrompt] = useState<string>("")
-  const [image, setImage] = useState<File | null>(null)
-  const [response, setResponse] = useState<string>("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [error, setError] = useState<string | null>(null)
-  const [history, setHistory] = useState<HistoryItem[]>([])
-  const [activeTab, setActiveTab] = useState<'solver' | 'history'>('solver')
-  const [expandedItems, setExpandedItems] = useState<any>({});
+  const [prompt, setPrompt] = useState<string>("");
+  const [image, setImage] = useState<File | null>(null);
+  const [response, setResponse] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
+  const [error, setError] = useState<string | null>(null);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [activeTab, setActiveTab] = useState<'solver' | 'history'>('solver');
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({}); // Use Record for expanded items
 
   useEffect(() => {
-    const savedHistory = localStorage.getItem('mathAiHistory')
+    const savedHistory = localStorage.getItem('mathAiHistory');
     if (savedHistory) {
-      setHistory(JSON.parse(savedHistory))
+      setHistory(JSON.parse(savedHistory));
     }
-  }, [])
+  }, []);
 
   const saveToHistory = (prompt: string, response: string) => {
     const newItem: HistoryItem = {
@@ -45,11 +45,11 @@ export function MathAiDashboard() {
       prompt,
       response,
       timestamp: Date.now(),
-    }
-    const updatedHistory = [newItem, ...history].slice(0, 10)
-    setHistory(updatedHistory)
-    localStorage.setItem('mathAiHistory', JSON.stringify(updatedHistory))
-  }
+    };
+    const updatedHistory = [newItem, ...history].slice(0, 10);
+    setHistory(updatedHistory);
+    localStorage.setItem('mathAiHistory', JSON.stringify(updatedHistory));
+  };
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -59,12 +59,12 @@ export function MathAiDashboard() {
     const interval = setInterval(() => {
       setProgress((prevProgress) => {
         if (prevProgress >= 100) {
-          clearInterval(interval)
-          return 100
+          clearInterval(interval);
+          return 100;
         }
-        return prevProgress + 10
-      })
-    }, 1000)
+        return prevProgress + 10;
+      });
+    }, 1000);
 
     try {
       const formData = new FormData();
@@ -97,13 +97,13 @@ export function MathAiDashboard() {
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      console.log("Image selected:", file.name, file.type, file.size)
-      setImage(file)
-      setError(null)
+      console.log("Image selected:", file.name, file.type, file.size);
+      setImage(file);
+      setError(null);
     }
-  }
+  };
 
   const renderMath = (text: string) => {
     const parts = text.split(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/);
@@ -118,8 +118,8 @@ export function MathAiDashboard() {
     });
   };
 
-  const toggleExpand = (id: any) => {
-    setExpandedItems((prev: any) => ({
+  const toggleExpand = (id: string) => { // Changed to string type
+    setExpandedItems((prev) => ({
       ...prev,
       [id]: !prev[id],
     }));
@@ -241,46 +241,25 @@ export function MathAiDashboard() {
 
             {isLoading && (
               <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-2">
-                    <Clock className="w-4 h-4 text-blue-500" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Estimated time remaining</span>
+                <CardContent>
+                  <Progress value={progress} className="mb-2" />
+                  <div className="flex justify-between">
+                    <Loader2 className="animate-spin w-4 h-4" />
+                    <span>Calculating...</span>
                   </div>
-                  <Progress value={progress} className="mt-2" />
                 </CardContent>
               </Card>
             )}
 
             {error && (
               <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
-            )}
-
-            {response && activeTab === 'solver' && (
-              <Card>
-                <CardContent className="p-6 space-y-4">
-                  <div className="flex items-start space-x-4">
-                    <Avatar>
-                      <UserCircle className="h-8 w-8 text-primary" />
-                    </Avatar>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">School AI</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Here's the solution to your problem:</p>
-                    </div>
-                  </div>
-                  <Separator />
-                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 shadow-inner">
-                    {renderMath(response)}
-                  </div>
-                </CardContent>
-              </Card>
             )}
           </div>
         </main>
       </div>
     </div>
-  )
+  );
 }
